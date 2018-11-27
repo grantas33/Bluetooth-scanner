@@ -1,0 +1,6 @@
+[
+  { "value": 0, "label": "Paskutinė minutė" },
+  { "value": 1, "label": "Paskutinės 15 minučių" },
+  { "value": 2, "label": "Paskutinė valanda" },
+  { "value": 3, "label": "Paskutinė para" }
+]
