@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import '../css/app.css';
 import {Header} from "./Header";
 import { FaTrash } from "react-icons/fa";
 

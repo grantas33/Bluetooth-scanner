@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {HashRouter as Router, Route} from "react-router-dom";
-import {Main} from './Main'
-import {Login} from "./Login";
+import {Main} from '../my_project/assets/js/Main'
+import {Login} from "../my_project/assets/js/Login";
 
 class App extends Component {
   render() {

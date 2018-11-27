@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import '../css/app.css';
 import graphData from './graphData.json'
 import graphTimeData from './graphTimeData.json'
 import filterData from './filterData.json'

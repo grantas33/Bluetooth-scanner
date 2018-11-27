@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import '../css/app.css';
 import {ResponsiveLine} from "nivo";
 
 export class Graph extends Component {
