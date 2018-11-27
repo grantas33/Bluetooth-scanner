@@ -20,3 +20,8 @@ services:
             - mysql
         volumes:
           - .:/app
+    frontend:
+        build: .docker/frontend/
+        container_name: frontend
+        volumes:
+          - .:/app
