@@ -40,12 +40,19 @@ twig:
 doctrine:
     dbal:
         driver: pdo_mysql
+        server_version: '5.7'
+        charset: latin1
+        default_table_options:
+            charset: latin1
+            collate: latin1_swedish_ci
         host: '%database_host%'
         port: '%database_port%'
         dbname: '%database_name%'
         user: '%database_user%'
         password: '%database_password%'
         charset: UTF8
+        url: mysql://root:root@mysqldb:3306
+        unix_socket: /var/lib/mysql/mysql.sock
         # if using pdo_sqlite as your database driver:
         #   1. add the path in parameters.yml
         #     e.g. database_path: '%kernel.project_dir%/var/data/data.sqlite'
@@ -69,3 +76,10 @@ swiftmailer:
 sensio_framework_extra:
    router:
         annotations: false
+
+lexik_jwt_authentication:
+    secret_key:       '%kernel.project_dir%/config/jwt/private.pem' # required for token creation
+    public_key:       '%kernel.project_dir%/config/jwt/public.pem'  # required for token verification
+    pass_phrase:      'root'
+    token_ttl:        3600
+

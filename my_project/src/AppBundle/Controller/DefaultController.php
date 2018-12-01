@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/{reactRouting}", name="index", requirements={"reactRouting"="^(?!api).+"}, defaults={"reactRouting": null})
+     * @Route("/{reactRouting}", name="index", requirements={"reactRouting"="^(?!(api)|(auth)).+"}, defaults={"reactRouting": null})
      */
     public function indexAction(Request $request)
     {
