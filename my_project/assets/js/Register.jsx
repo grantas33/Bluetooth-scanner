@@ -72,7 +72,6 @@ class Register extends Component {
                                         })
                                     }
                                 />
-                                <span className="glyphicon glyphicon-user form-control-feedback" />
                             </div>
                         </div>
                     </div>
@@ -98,7 +97,6 @@ class Register extends Component {
                                         })
                                     }
                                 />
-                                <span className="glyphicon glyphicon-user form-control-feedback" />
                             </div>
                         </div>
                     </div>
