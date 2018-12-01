@@ -3,11 +3,18 @@
 namespace AppBundle\Entity;
 
 use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="user")
  * @ORM\Entity
+ * @UniqueEntity(
+ * fields={"email"},
+ * errorPath="email",
+ * message="Šis e. pašto adresas jau egzistuoja"
+ *)
  */
 class User implements JWTUserInterface, \JsonSerializable
 {
@@ -23,22 +30,41 @@ class User implements JWTUserInterface, \JsonSerializable
 
     /**
      * @ORM\Column(type="string", length=50, unique=true)
+     * @Assert\NotNull(message = "Įveskite e. pašto adresą")
+     * @Assert\Email(
+     *     message = "E. pašto adreso formatas klaidingas"
+     * )
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=500)
+     * @Assert\NotNull(message = "Įveskite slaptažodį")
+     * @Assert\Length(
+     *     min=3,
+     *     minMessage = "Slaptažodis turi būti sudarytas bent iš 3 simbolių"
+     * )
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Assert\NotNull(message = "Įveskite vardą")
+     * @Assert\Length(
+     *     min=3,
+     *     minMessage = "Vardas turi būti sudarytas bent iš 3 simbolių"
+     * )
      * @var string
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Assert\NotNull(message = "Įveskite pavardę")
+     * @Assert\Length(
+     *     min=3,
+     *     minMessage = "Pavardė turi būti sudaryta bent iš 3 simbolių"
+     * )
      * @var string
      */
     private $surname;

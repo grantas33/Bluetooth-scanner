@@ -8,7 +8,7 @@ export class Main extends Component {
     render() {
         return (
             <div className="App">
-                <Route path="/" exact component={MainPage} />
+                <Route path="/main" exact component={MainPage} />
                 <Route path="/users" component={Users} />
                 <div className="container-fluid margin d-flex justify-content-center align-items-end" style={{flexGrow: 2}}>
                     <div className="text-center text-muted bg-grey">
