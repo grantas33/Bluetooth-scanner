@@ -5,12 +5,15 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\User;
 use AppBundle\Form\RegistrationType;
 use AppBundle\Service\FormHandler;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 class AuthController extends Controller
 {
@@ -18,21 +21,48 @@ class AuthController extends Controller
     private $formHandler;
 
     /**
+     * @var JWTEncoderInterface
+     */
+    private $jwtEncoder;
+
+    /**
      * AuthController constructor.
      * @param FormHandler $formHandler
+     * @param JWTEncoderInterface $jwtEncoder
      */
-    public function __construct(FormHandler $formHandler)
+    public function __construct(FormHandler $formHandler, JWTEncoderInterface $jwtEncoder)
     {
         $this->formHandler = $formHandler;
+        $this->jwtEncoder = $jwtEncoder;
     }
 
 
     /**
-     * @Route("/auth/login", name="login")
+     * @Route("/auth/login", name="login", methods="POST")
      */
     public function loginAction(Request $request)
     {
-        return [];
+        $data = json_decode($request->getContent(), true);
+        $email = $data['email'];
+        $password = $data['password'];
+        $repository = $this->getDoctrine()->getRepository(User::class);
+        $user = $repository->findOneBy(['email' => $email]);
+        if (!$user) {
+            return new JsonResponse([
+                'error_message' => 'Bad credentials'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        $isValid = $this->get('security.password_encoder')
+            ->isPasswordValid($user, $password);
+        if (!$isValid) {
+            return new JsonResponse([
+                'error_message' => 'Bad credentials'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+        $token = $this->getToken($user);
+        return new JsonResponse([
+            'token' => $token
+        ]);
     }
 
     /**
@@ -67,5 +97,17 @@ class AuthController extends Controller
         return new JsonResponse([
             'success_message' => 'Successfully registered new user'
         ], Response::HTTP_CREATED);
+    }
+
+    public function getToken(User $user)
+    {
+        try {
+            return $this->jwtEncoder
+                ->encode([
+                    'email' => $user->getEmail()
+                ]);
+        } catch (JWTEncodeFailureException $e) {
+            throw new CustomUserMessageAuthenticationException('Failed to encode the token');
+        }
     }
 }

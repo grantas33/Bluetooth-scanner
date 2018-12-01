@@ -4,6 +4,7 @@
   "devDependencies": {
     "@babel/preset-react": "^7.0.0",
     "@symfony/webpack-encore": "^0.22.1",
+    "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-react": "^6.24.1",
     "nivo": "^0.31.0",
