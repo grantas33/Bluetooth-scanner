@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDom from 'react-dom';
 import {HashRouter as Router, Route} from "react-router-dom";
 import {Main} from './Main'
 import {Login} from "./Login";
@@ -17,4 +18,4 @@ class App extends Component {
     }
 }
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+ReactDom.render(<App/>, document.getElementById('root'));

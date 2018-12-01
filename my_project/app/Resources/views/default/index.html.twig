@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('build/js/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -9,5 +9,6 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript" src="{{ asset('build/js/app.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/app.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('build/runtime.js') }}"></script>
 {% endblock %}
