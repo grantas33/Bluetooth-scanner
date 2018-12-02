@@ -230,6 +230,7 @@ class User implements JWTUserInterface, \JsonSerializable
         return $this->email;
     }
 
+
     /**
      * Removes sensitive data from the user.
      *

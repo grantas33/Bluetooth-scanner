@@ -49,14 +49,14 @@ class AuthController extends Controller
         $user = $repository->findOneBy(['email' => $email]);
         if (!$user) {
             return new JsonResponse([
-                'error_message' => 'Bad credentials'
+                'error_message' => 'Vartotojas nerastas'
             ], Response::HTTP_BAD_REQUEST);
         }
         $isValid = $this->get('security.password_encoder')
             ->isPasswordValid($user, $password);
         if (!$isValid) {
             return new JsonResponse([
-                'error_message' => 'Bad credentials'
+                'error_message' => 'Neteisingi prisijungimo duomenys'
             ], Response::HTTP_UNAUTHORIZED);
         }
         $token = $this->getToken($user);
@@ -85,6 +85,7 @@ class AuthController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
         try {
+            $user->setUsername($user->getEmail());
             $user->setRole(User::ROLE_USER);
             $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
             $em->persist($user);

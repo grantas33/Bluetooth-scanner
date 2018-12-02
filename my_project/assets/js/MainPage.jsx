@@ -1,19 +1,52 @@
 import React, { Component } from 'react';
 import '../css/app.css';
+import {Redirect} from "react-router-dom";
 import graphData from './graphData.json'
 import graphTimeData from './graphTimeData.json'
 import filterData from './filterData.json'
 import {Graph} from "./Graph";
 import Select from 'react-select'
 import {Header} from "./Header";
+import axios from "axios";
+import tokenObject from "./Helpers/tokenObject.js";
 
-export class MainPage extends Component {
+class MainPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            userObject: {},
+            redirectToLogin: false
+        };
+
+    }
+
+    componentDidMount() {
+        axios
+            .get("api/user/current", tokenObject())
+            .then(res => {
+                console.log(res);
+                this.setState({
+                    userObject: res.data
+                })
+            })
+            .catch(err => {
+                this.setState({
+                    redirectToLogin: true
+                });
+            });
+    }
+
     render() {
+        const redirectToLogin = this.state.redirectToLogin;
+        if (redirectToLogin === true) {
+            return <Redirect to="/login" />
+        }
         return (<>
-            <Header
-                routeUrl="/users"
-                routeTitle="Vartotojai"
-            />
+                <Header
+                    routeUrl={this.state.userObject.role === 'ROLE_ADMIN' ? '/users' : ''}
+                    routeTitle={'Vartotojai'}
+                    fullName={this.state.userObject.name ? this.state.userObject.name + ' ' + this.state.userObject.surname : ''}
+                />
                 <div className='container'>
                     <div className="row" style={{"marginTop": "10px"}}>
                         <div className="col-sm-4">
@@ -108,3 +141,5 @@ export class MainPage extends Component {
         );
     }
 }
+
+export default MainPage

@@ -82,4 +82,5 @@ lexik_jwt_authentication:
     public_key:       '%kernel.project_dir%/app/config/jwt/public.pem'  # required for token verification
     pass_phrase:      'root'
     token_ttl:        20000
+    user_identity_field: email
 

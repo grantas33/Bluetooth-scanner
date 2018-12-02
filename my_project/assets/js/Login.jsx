@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../css/app.css';
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
+import axios from "axios";
 import {FaLock, FaEnvelope} from 'react-icons/fa'
 
 class Login extends Component {
@@ -10,19 +11,40 @@ class Login extends Component {
             email: "",
             password: "",
             error: "",
-            retypedPassword: "",
-            redirectToLogin: false
+            redirectToMain: false
         };
         this.login = this.login.bind(this);
     }
 
     login() {
-
+        axios
+            .post("auth/login", {email: this.state.email, password: this.state.password})
+            .then(res => {
+                window.localStorage.setItem("userToken", res.data.token);
+                this.setState({
+                    redirectToMain: true
+                })
+            })
+            .catch(err => {
+                this.setState({
+                    error: err.response.data.error_message
+                });
+            });
     }
 
     render() {
+        const redirectToMain = this.state.redirectToMain;
+        if (redirectToMain === true) {
+            return <Redirect to="/main" />
+        }
         return (
                 <header className="App-header">
+                    {this.state.error ?
+                        <div className='row'>
+                            <div className='col alert alert-danger'>
+                                {this.state.error}
+                            </div>
+                        </div> : ''}
                     <form method="post">
                         <div className='row'>
                             <div className="col-1">

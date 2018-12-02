@@ -7,11 +7,11 @@ export class Header extends Component {
         return (
             <div
                 className="container-fluid d-flex justify-content-between align-items-center bg-light">
-                <div className="margin">Grantas Gadliauskas</div>
-                <div className="margin">
-                    <Link to={this.props.routeUrl}
-                          className='btn btn-secondary btn-block'>{this.props.routeTitle}</Link>
-                </div>
+                <div className="margin">{this.props.fullName  ? this.props.fullName : ''}</div>
+                {this.props.routeUrl ?
+                    <div className="margin">
+                        <Link to={this.props.routeUrl} className='btn btn-secondary btn-block'>{this.props.routeTitle}</Link>
+                </div> :''}
             </div>
         );
     }
