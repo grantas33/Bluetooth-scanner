@@ -13,7 +13,7 @@ class DeviceController extends Controller
 {
 
     /**
-     * @Route("/auth/log", name="log", methods="POST")
+     * @Route("/api/log", name="log", methods="POST")
      * @param Request $request
      * @return JsonResponse
      */
@@ -39,6 +39,7 @@ class DeviceController extends Controller
             }
             $deviceLog = new DeviceLog();
             $deviceLog->setDevice($device);
+            $deviceLog->setObserver($this->getUser());
             $deviceLog->setName($name);
             $deviceLog->setDate(\DateTime::createFromFormat('n/j/Y g:i:s A', $date));
             $em->persist($deviceLog);
@@ -58,7 +59,7 @@ class DeviceController extends Controller
     public function getLatestLogsAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $latestLogs = $em->getRepository(DeviceLog::class)->findLatestLogs();
+        $latestLogs = $em->getRepository(DeviceLog::class)->findLatestLogs($this->getUser());
         $uniqueLogsGrouped = [];
         /** @var DeviceLog $log */
         foreach ($latestLogs as $log) {

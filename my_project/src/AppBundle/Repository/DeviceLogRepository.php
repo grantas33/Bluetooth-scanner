@@ -8,15 +8,18 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
 class DeviceLogRepository extends EntityRepository
 {
-    public function findLatestLogs()
+    public function findLatestLogs(User $currentUser)
     {
         $query = $this->createQueryBuilder('l')
             ->andWhere('l.date > :latestPeriod')
-            ->setParameter('latestPeriod', new \DateTime('-25 seconds'));
+            ->andWhere('l.observer = :currentUser')
+            ->setParameter('latestPeriod', new \DateTime('-25 seconds'))
+            ->setParameter('currentUser', $currentUser);
         return $query->getQuery()->getResult();
     }
 }

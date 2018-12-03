@@ -31,6 +31,11 @@ class DeviceLog implements \JsonSerializable
     private $device;
 
     /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="observedDeviceLogs")
+     */
+    private $observer;
+
+    /**
      * @ORM\Column(type="string")
      * @var string
      */
@@ -66,6 +71,24 @@ class DeviceLog implements \JsonSerializable
     public function getDevice()
     {
         return $this->device;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getObserver()
+    {
+        return $this->observer;
+    }
+
+    /**
+     * @param mixed $observer
+     * @return DeviceLog
+     */
+    public function setObserver($observer)
+    {
+        $this->observer = $observer;
+        return $this;
     }
 
     /**

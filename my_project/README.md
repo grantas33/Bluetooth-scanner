@@ -1,6 +1,7 @@
 A Symfony project created on November 24, 2018, 9:41 pm.
 
 This project requires Docker to be installed.
+This project uses BluetoothView to detect Bluetooth devices on Windows OS supporting Bluetooth connection.
 
 Start the containers from root directory: `docker-compose up`
 
@@ -27,3 +28,5 @@ Connect to database from host machine:
 * IP: `localhost:4000`
 * user: `root`
 * password: `root`
+
+Start scanning for Bluetooth devices by running Powershell script `sender.ps1`

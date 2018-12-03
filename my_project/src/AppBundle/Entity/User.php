@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -73,6 +74,19 @@ class User implements JWTUserInterface, \JsonSerializable
      * @ORM\Column(type="string", length=50)
      */
     private $role;
+
+    /**
+     * @ORM\OneToMany(targetEntity="DeviceLog", mappedBy="observer")
+     */
+    private $observedDeviceLogs;
+
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $this->observedDeviceLogs = new ArrayCollection();
+    }
 
     /**
      * @return int
