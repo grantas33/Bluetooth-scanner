@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Table(name="deviceLog")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\DeviceLogRepository")
  */
 class DeviceLog implements \JsonSerializable
 {

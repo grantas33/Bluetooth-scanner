@@ -15,6 +15,7 @@ class MainPage extends Component {
         super(props);
         this.state = {
             userObject: {},
+            latestLogs: {},
             redirectToLogin: false
         };
 
@@ -34,6 +35,15 @@ class MainPage extends Component {
                     redirectToLogin: true
                 });
             });
+
+        axios
+            .get("api/logs/latest", tokenObject())
+            .then(res => {
+                console.log(res);
+                this.setState({
+                    latestLogs: res.data
+                })
+            })
     }
 
     render() {

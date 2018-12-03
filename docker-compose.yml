@@ -20,6 +20,8 @@ services:
             - mysql
         volumes:
           - .:/app
+        environment:
+            TZ: Europe/Vilnius
     frontend:
         build: .docker/frontend/
         container_name: frontend

@@ -48,4 +48,18 @@ class DeviceController extends Controller
             'success_message' => 'Successfully updated device logs'
         ]);
     }
+
+    /**
+     * @Route("/api/logs/latest", name="latest-logs", methods="GET")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getLatestLogsAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $latestLogs = $em->getRepository(DeviceLog::class)->findLatestLogs();
+        return new JsonResponse([
+            $latestLogs
+        ]);
+    }
 }
