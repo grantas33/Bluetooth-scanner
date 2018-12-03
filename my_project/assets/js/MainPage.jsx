@@ -39,7 +39,7 @@ class MainPage extends Component {
         this.getLatestLogs();
         this.interval = setInterval(() => {
             this.getLatestLogs();
-        }, 20000);
+        }, 10000);
 
     }
 
@@ -52,10 +52,10 @@ class MainPage extends Component {
         var nextPointDate = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
 
         this.setState(prevState => ({
-            graphData: [...prevState.graphData, {
+            graphData: [...prevState.graphData.slice(-9), {
                 "x": nextPointDate,
                 "y": this.state.latestLogs.length
-            }].slice(0, 10)
+            }]
         }));
     }
 

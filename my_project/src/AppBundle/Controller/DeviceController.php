@@ -25,6 +25,7 @@ class DeviceController extends Controller
         $devices = explode("\n", $data['bluetoothContents']);
         foreach ($devices as $device) {
             $deviceData = explode(",", $device);
+            if (count($deviceData) < 6) continue;
             $name = $deviceData[0];
             $address = $deviceData[2];
             $type = $deviceData[3];
@@ -58,8 +59,17 @@ class DeviceController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $latestLogs = $em->getRepository(DeviceLog::class)->findLatestLogs();
+        $uniqueLogsGrouped = [];
+        /** @var DeviceLog $log */
+        foreach ($latestLogs as $log) {
+            $uniqueLogsGrouped[$log->getDevice()->getAddress()][] = $log;
+        }
+        $uniqueLogs = [];
+        foreach ($uniqueLogsGrouped as $logs) {
+            $uniqueLogs[] = $logs[0];
+        }
         return new JsonResponse([
-            $latestLogs
+            $uniqueLogs
         ]);
     }
 }

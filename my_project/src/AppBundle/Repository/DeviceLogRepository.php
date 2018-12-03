@@ -16,8 +16,7 @@ class DeviceLogRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('l')
             ->andWhere('l.date > :latestPeriod')
-            ->setParameter('latestPeriod', new \DateTime('-20 seconds'));
-
+            ->setParameter('latestPeriod', new \DateTime('-25 seconds'));
         return $query->getQuery()->getResult();
     }
 }
