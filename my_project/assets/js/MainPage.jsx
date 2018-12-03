@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import '../css/app.css';
 import {Redirect} from "react-router-dom";
-import graphData from './graphData.json'
 import graphTimeData from './graphTimeData.json'
 import filterData from './filterData.json'
-import {Graph} from "./Graph";
+import Graph from "./Graph";
 import Select from 'react-select'
 import {Header} from "./Header";
 import axios from "axios";
@@ -16,16 +15,17 @@ class MainPage extends Component {
         this.state = {
             userObject: {},
             latestLogs: [],
+            graphData: [],
             redirectToLogin: false
         };
         this.getLatestLogs = this.getLatestLogs.bind(this);
+        this.getGraphDataPoints = this.getGraphDataPoints.bind(this);
     }
 
     componentDidMount() {
         axios
             .get("api/user/current", tokenObject())
             .then(res => {
-                console.log(res);
                 this.setState({
                     userObject: res.data
                 })
@@ -36,9 +36,9 @@ class MainPage extends Component {
                 });
             });
 
-        this.getLatestLogs()
+        this.getLatestLogs();
         this.interval = setInterval(() => {
-            this.getLatestLogs()
+            this.getLatestLogs();
         }, 20000);
 
     }
@@ -47,14 +47,26 @@ class MainPage extends Component {
         clearInterval(this.interval);
     }
 
+    getGraphDataPoints() {
+        var d = new Date();
+        var nextPointDate = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+
+        this.setState(prevState => ({
+            graphData: [...prevState.graphData, {
+                "x": nextPointDate,
+                "y": this.state.latestLogs.length
+            }].slice(0, 10)
+        }));
+    }
+
     getLatestLogs() {
         axios
             .get("api/logs/latest", tokenObject())
             .then(res => {
-                console.log(res);
                 this.setState({
                     latestLogs: res.data[0]
-                })
+                });
+                this.getGraphDataPoints();
             })
     }
 
@@ -85,7 +97,7 @@ class MainPage extends Component {
                     </div>
                 </div>
                 <div className="container" style={{height: "300px", backgroundColor: "white"}}>
-                    <Graph data={graphData}/>
+                    {this.state.graphData !== [] ? <Graph data={this.state.graphData}/> : ''}
                 </div>
                 <div className="container">
                     <div className="row" style={{"marginBottom": "10px"}}>

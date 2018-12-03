@@ -2,10 +2,25 @@ import React, { Component } from 'react';
 import '../css/app.css';
 import {ResponsiveLine} from "nivo";
 
-export class Graph extends Component {
+class Graph extends Component {
+    constructor(props) {
+        super(props);
+        this.getChartData = this.getChartData.bind(this);
+    }
+
+    getChartData(data) {
+        return [
+            {
+                id: "amount",
+                color: "hsl(14, 70%, 50%)",
+                data: data
+            }
+        ]
+    }
+
     render() {
         return <ResponsiveLine
-                        data={this.props.data}
+                        data={this.getChartData(this.props.data)}
                         margin={{
                             "top": 50,
                             "right": 60,
@@ -49,3 +64,5 @@ export class Graph extends Component {
                     />
     }
 }
+
+export default Graph;
