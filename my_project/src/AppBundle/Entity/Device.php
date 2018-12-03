@@ -1,29 +1,85 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: DockerUser
- * Date: 12/3/2018
- * Time: 1:18 PM
- */
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Table(name="device")
+ * @ORM\Entity
+ */
 class Device implements \JsonSerializable
 {
     /**
-     * @var 
+     *
+     * @ORM\Column(type="string")
+     * @ORM\Id
+     * @var string
      */
     private $address;
 
     /**
-     * Specify data which should be serialized to JSON
-     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
+     * @ORM\Column(type="string")
+     * @var string
      */
+    private $type;
+
+    /**
+     * @ORM\OneToMany(targetEntity="DeviceLog", mappedBy="device")
+     */
+    private $deviceLogs;
+
+    /**
+     * Device constructor.
+     */
+    public function __construct()
+    {
+        $this->deviceLogs = new ArrayCollection();
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     * @return Device
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     * @return Device
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
     public function jsonSerialize()
     {
-        // TODO: Implement jsonSerialize() method.
+        return [
+            'address' => $this->address,
+            'type' => $this->type
+        ];
     }
 }
