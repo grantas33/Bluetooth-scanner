@@ -15,10 +15,10 @@ class MainPage extends Component {
         super(props);
         this.state = {
             userObject: {},
-            latestLogs: {},
+            latestLogs: [],
             redirectToLogin: false
         };
-
+        this.getLatestLogs = this.getLatestLogs.bind(this);
     }
 
     componentDidMount() {
@@ -36,12 +36,24 @@ class MainPage extends Component {
                 });
             });
 
+        this.getLatestLogs()
+        this.interval = setInterval(() => {
+            this.getLatestLogs()
+        }, 20000);
+
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
+    getLatestLogs() {
         axios
             .get("api/logs/latest", tokenObject())
             .then(res => {
                 console.log(res);
                 this.setState({
-                    latestLogs: res.data
+                    latestLogs: res.data[0]
                 })
             })
     }
@@ -107,24 +119,14 @@ class MainPage extends Component {
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>OnePlus 3</td>
-                            <td>05-D9-22-59-31-A2</td>
-                            <td>Phone</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Apple 6</td>
-                            <td>AE-05-17-4B-BE-BE</td>
-                            <td>Phone</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>KD-5S6F89D</td>
-                            <td>5F-73-09-26-85-28</td>
-                            <td>TV</td>
-                        </tr>
+                        {this.state.latestLogs.map((log, i) => {
+                            return <tr key={i}>
+                                <th scope="row">{i + 1}</th>
+                                <td>{log.name}</td>
+                                <td>{log.device.address}</td>
+                                <td>{log.device.type}</td>
+                            </tr>
+                        })}
                         </tbody>
                     </table>
                 </div>
