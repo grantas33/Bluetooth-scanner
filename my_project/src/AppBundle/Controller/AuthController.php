@@ -85,7 +85,6 @@ class AuthController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
         try {
-            $user->setUsername($user->getEmail());
             $user->setRole(User::ROLE_USER);
             $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
             $em->persist($user);

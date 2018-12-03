@@ -6,7 +6,8 @@ export class Header extends Component {
     render() {
         return (
             <div
-                className="container-fluid d-flex justify-content-between align-items-center bg-light">
+                className="container-fluid d-flex justify-content-between align-items-center bg-light"
+                style={{'minHeight': '8vh'}}>
                 <div className="margin">{this.props.fullName  ? this.props.fullName : ''}</div>
                 {this.props.routeUrl ?
                     <div className="margin">

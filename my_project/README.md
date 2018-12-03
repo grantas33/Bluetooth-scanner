@@ -14,11 +14,16 @@ Server will begin running on `localhost:8080`
 
 Inside the frontend container, cd into my_project and install js dependencies: `npm install`
 
+To create the database and the tables:
+* copy `parameters.yml.dist` content to `parameters.yml`
+* cd into my_project and create database: `php bin/console doctrine:database:create`
+* create tables: `php bin/console doctrine:schema:update --force`
+
 Build javascript, css:
 * for dev: `yarn encore dev`
 * for production: `yarn encore production`
 
-Connect to database:
+Connect to database from host machine:
 * IP: `localhost:4000`
 * user: `root`
 * password: `root`
