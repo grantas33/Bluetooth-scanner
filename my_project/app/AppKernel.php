@@ -33,6 +33,13 @@ class AppKernel extends Kernel
         return $bundles;
     }
 
+    public function boot()
+    {
+        // get rid of Warning: date_default_timezone_get(): It is not safe to rely on the system's timezone
+        date_default_timezone_set( 'Europe/Paris' );
+        parent::boot();
+    }
+
     public function getRootDir()
     {
         return __DIR__;

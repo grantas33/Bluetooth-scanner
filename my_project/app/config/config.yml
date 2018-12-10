@@ -51,7 +51,7 @@ doctrine:
         user: '%database_user%'
         password: '%database_password%'
         charset: UTF8
-        url: mysql://root:root@mysqldb:3306
+        url: mysql://gragad:ENTERPASS@127.0.0.1
         unix_socket: /var/lib/mysql/mysql.sock
         # if using pdo_sqlite as your database driver:
         #   1. add the path in parameters.yml

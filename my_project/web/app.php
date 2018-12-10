@@ -1,10 +1,11 @@
 <?php
 
 use Symfony\Component\HttpFoundation\Request;
-
-require __DIR__.'/../vendor/autoload.php';
+ echo 'b\n';
+require __DIR__.'/../symfony/vendor/autoload.php';
+echo 'b\n';
 if (PHP_VERSION_ID < 70000) {
-    include_once __DIR__.'/../var/bootstrap.php.cache';
+    include_once __DIR__.'/../symfony/var/bootstrap.php.cache';
 }
 
 $kernel = new AppKernel('prod', false);
@@ -19,3 +20,4 @@ $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();
 $kernel->terminate($request, $response);
+echo 'b\n';
