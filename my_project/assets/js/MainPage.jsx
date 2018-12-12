@@ -20,6 +20,7 @@ class MainPage extends Component {
         };
         this.getLatestLogs = this.getLatestLogs.bind(this);
         this.getGraphDataPoints = this.getGraphDataPoints.bind(this);
+        this.getFirstGraphDataPoints = this.getFirstGraphDataPoints.bind(this);
     }
 
     componentDidMount() {
@@ -36,7 +37,8 @@ class MainPage extends Component {
                 });
             });
 
-        this.getLatestLogs();
+        this.getFirstGraphDataPoints();
+        // this.getLatestLogs();
         this.interval = setInterval(() => {
             this.getLatestLogs();
         }, 10000);
@@ -57,6 +59,17 @@ class MainPage extends Component {
                 "y": this.state.latestLogs.length
             }]
         }));
+    }
+
+    getFirstGraphDataPoints() {
+        axios
+            .get("/api/logs/firstGraphData", tokenObject())
+            .then(res => {
+                console.log(res);
+                this.setState({
+                    graphData: res.data[0]
+                });
+            })
     }
 
     getLatestLogs() {

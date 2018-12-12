@@ -73,4 +73,45 @@ class DeviceController extends Controller
             $uniqueLogs
         ]);
     }
+
+    /**
+     * @Route("/api/logs/firstGraphData", name="first-graph-data-points", methods="GET")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getLatest100SecondGraphDataAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $latestLogs = $em->getRepository(DeviceLog::class)->findLast100SecondLogs($this->getUser());
+
+        $interval = new \DatePeriod(
+            new \DateTime('-90 seconds'),
+            new \DateInterval('PT10S'),
+            new \DateTime()
+        );
+
+        $graphDataPoints = [];
+
+        /** @var \DateTime $timePoint */
+        foreach ($interval as $timePoint) {
+            $timePointString = $timePoint->format("H:i:s");
+            $count = 0;
+            $before10sec = clone $timePoint;
+            $before10sec->modify('-10 seconds');
+            /** @var DeviceLog $log */
+            foreach ($latestLogs as $log) {
+                if ($log->getDate() > $before10sec && $log->getDate() < $timePoint) {
+                    $count++;
+                }
+            }
+            $graphDataPoints[] = [
+                'x' => $timePointString,
+                'y' => $count
+            ];
+        }
+
+        return new JsonResponse([
+            $graphDataPoints
+        ]);
+    }
 }
