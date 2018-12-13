@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Device;
 use AppBundle\Entity\DeviceLog;
+use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,14 +53,23 @@ class DeviceController extends Controller
     }
 
     /**
-     * @Route("/api/logs/latest", name="latest-logs", methods="GET")
+     * @Route("/api/logs/latest", name="latest-logs", methods="POST")
      * @param Request $request
      * @return JsonResponse
      */
     public function getLatestLogsAction(Request $request)
     {
+        $usersToFilter = [$this->getUser()];
+        $usersToFilterData = json_decode($request->getContent(), true);
+      //  var_dump($usersToFilterData);
+        if ($this->getUser()->getRole() == User::ROLE_ADMIN && count($usersToFilterData) > 0) {
+            $usersToFilter = [];
+            foreach ($usersToFilterData as $userToFilter) {
+                $usersToFilter[] = $userToFilter['value'];
+            }
+        }
         $em = $this->getDoctrine()->getManager();
-        $latestLogs = $em->getRepository(DeviceLog::class)->findLatestLogs($this->getUser());
+        $latestLogs = $em->getRepository(DeviceLog::class)->findLatestLogs($usersToFilter);
         $uniqueLogsGrouped = [];
         /** @var DeviceLog $log */
         foreach ($latestLogs as $log) {
@@ -75,14 +85,23 @@ class DeviceController extends Controller
     }
 
     /**
-     * @Route("/api/logs/firstGraphData", name="first-graph-data-points", methods="GET")
+     * @Route("/api/logs/firstGraphData", name="first-graph-data-points", methods="POST")
      * @param Request $request
      * @return JsonResponse
      */
     public function getLatest100SecondGraphDataAction(Request $request)
     {
+        $usersToFilter = [$this->getUser()];
+        $usersToFilterData = json_decode($request->getContent(), true);
+        if ($this->getUser()->getRole() == User::ROLE_ADMIN && count($usersToFilterData) > 0) {
+            $usersToFilter = [];
+            foreach ($usersToFilterData as $userToFilter) {
+                $usersToFilter[] = $userToFilter['value'];
+            }
+        }
+
         $em = $this->getDoctrine()->getManager();
-        $latestLogs = $em->getRepository(DeviceLog::class)->findLast100SecondLogs($this->getUser());
+        $latestLogs = $em->getRepository(DeviceLog::class)->findLast100SecondLogs($usersToFilter);
 
         $interval = new \DatePeriod(
             new \DateTime('-90 seconds'),

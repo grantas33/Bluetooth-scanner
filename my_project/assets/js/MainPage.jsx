@@ -14,13 +14,19 @@ class MainPage extends Component {
         super(props);
         this.state = {
             userObject: {},
+            users: null,
             latestLogs: [],
             graphData: [],
-            redirectToLogin: false
+            redirectToLogin: false,
+            usersToFilter: {}
         };
         this.getLatestLogs = this.getLatestLogs.bind(this);
+        this.getLatestLogsOnLoad = this.getLatestLogsOnLoad.bind(this);
         this.getGraphDataPoints = this.getGraphDataPoints.bind(this);
         this.getFirstGraphDataPoints = this.getFirstGraphDataPoints.bind(this);
+        this.getUsers = this.getUsers.bind(this);
+        this.handleFilterChange = this.handleFilterChange.bind(this);
+
     }
 
     componentDidMount() {
@@ -37,8 +43,9 @@ class MainPage extends Component {
                 });
             });
 
+        this.getUsers();
+        this.getLatestLogsOnLoad();
         this.getFirstGraphDataPoints();
-        // this.getLatestLogs();
         this.interval = setInterval(() => {
             this.getLatestLogs();
         }, 10000);
@@ -63,9 +70,8 @@ class MainPage extends Component {
 
     getFirstGraphDataPoints() {
         axios
-            .get("/api/logs/firstGraphData", tokenObject())
+            .post("/api/logs/firstGraphData", this.state.usersToFilter, tokenObject())
             .then(res => {
-                console.log(res);
                 this.setState({
                     graphData: res.data[0]
                 });
@@ -74,13 +80,43 @@ class MainPage extends Component {
 
     getLatestLogs() {
         axios
-            .get("api/logs/latest", tokenObject())
+            .post("api/logs/latest", this.state.usersToFilter, tokenObject())
             .then(res => {
                 this.setState({
                     latestLogs: res.data[0]
                 });
                 this.getGraphDataPoints();
             })
+    }
+
+    getLatestLogsOnLoad() {
+        axios
+            .post("api/logs/latest", this.state.usersToFilter, tokenObject())
+            .then(res => {
+                this.setState({
+                    latestLogs: res.data[0]
+                });
+            })
+    }
+
+    getUsers() {
+        axios
+            .get("api/user/all-value-label", tokenObject())
+            .then(res => {
+                this.setState({
+                    users: res.data
+                })
+            })
+            .catch(err => {
+        });
+    }
+
+    handleFilterChange(options) {
+        this.setState({
+            usersToFilter: options
+        })
+        this.getLatestLogsOnLoad();
+        this.getFirstGraphDataPoints();
     }
 
     render() {
@@ -112,27 +148,23 @@ class MainPage extends Component {
                 <div className="container" style={{height: "300px", backgroundColor: "white"}}>
                     {this.state.graphData !== [] ? <Graph data={this.state.graphData}/> : ''}
                 </div>
+                {this.state.userObject.role === 'ROLE_ADMIN' && this.state.users !== null ?
                 <div className="container">
                     <div className="row" style={{"marginBottom": "10px"}}>
-                        <div className="col-sm-4">
+                        <div className="col-sm-12">
                             <Select
                                 defaultValue={[]}
                                 isMulti
+                                onChange={this.handleFilterChange}
                                 name="userFilter"
-                                options={filterData}
+                                options={this.state.users}
                                 className="basic-multi-select"
                                 classNamePrefix="select"
                                 placeholder="Filtruoti pagal vartotojus.."
                             />
                         </div>
-                        <div className="col-sm-4">
-                            <input type="text" className="form-control" placeholder="Filtruoti pagal įrenginio vardą"/>
-                        </div>
-                        <div className="col-sm-4">
-                            <input type="text" className="form-control" placeholder="Filtruoti pagal įrenginio tipą"/>
-                        </div>
                     </div>
-                </div>
+                </div> : ''}
                 <div className="container">
                     <table className="table table-striped table-sm">
                         <thead>
@@ -155,25 +187,25 @@ class MainPage extends Component {
                         </tbody>
                     </table>
                 </div>
-                <div className="container">
-                    <div className="row">
-                        <div className="col-sm-4">
-                            <div className="alert alert-primary">
-                                <strong>5</strong> matomi įrenginiai vienu metu!
-                            </div>
-                        </div>
-                        <div className="col-sm-4">
-                            <div className="alert alert-warning">
-                                <strong>OnePlus 3</strong> praleido <strong>1m 30s</strong>
-                            </div>
-                        </div>
-                        <div className="col-sm-4">
-                            <div className="alert alert-success">
-                                <strong>Phone</strong> išsiskyrė kaip populiariausias tipas
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {/*<div className="container">*/}
+                    {/*<div className="row">*/}
+                        {/*<div className="col-sm-4">*/}
+                            {/*<div className="alert alert-primary">*/}
+                                {/*<strong>5</strong> matomi įrenginiai vienu metu!*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                        {/*<div className="col-sm-4">*/}
+                            {/*<div className="alert alert-warning">*/}
+                                {/*<strong>OnePlus 3</strong> praleido <strong>1m 30s</strong>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                        {/*<div className="col-sm-4">*/}
+                            {/*<div className="alert alert-success">*/}
+                                {/*<strong>Phone</strong> išsiskyrė kaip populiariausias tipas*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                {/*</div>*/}
         </>
         );
     }

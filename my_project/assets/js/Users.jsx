@@ -13,15 +13,16 @@ class Users extends Component {
             userObject: {
                 role: 'ROLE_ADMIN'
             },
+            users: null,
             redirectToLogin: false,
         };
+        this.getUsers = this.getUsers.bind(this);
     }
 
     componentDidMount() {
         axios
             .get("api/user/current", tokenObject())
             .then(res => {
-                console.log(res);
                 this.setState({
                     userObject: res.data
                 })
@@ -31,12 +32,33 @@ class Users extends Component {
                     redirectToLogin: true
                 });
             });
+        this.getUsers();
+    }
+
+    getUsers() {
+        axios
+            .get("api/user/all", tokenObject())
+            .then(res => {
+                this.setState({
+                    users: res.data
+                })
+            })
     }
 
     render() {
         const redirectToLogin = this.state.redirectToLogin;
         if (redirectToLogin === true || this.state.userObject.role !== 'ROLE_ADMIN') {
             return <Redirect to="/login" />
+        }
+        if (this.state.users === null) {
+            return <>
+                <Header
+                    routeUrl={'/main'}
+                    routeTitle={'Grįžti į pagrindinį'}
+                    fullName={this.state.userObject.name ? this.state.userObject.name + ' ' + this.state.userObject.surname : ''}
+                />
+                <h3>Palaukite..</h3>
+                </>
         }
         return <>
             <Header
@@ -51,25 +73,22 @@ class Users extends Component {
                 <th>#</th>
                 <th>Vardas</th>
                 <th>Pavardė</th>
-                <th> </th>
-                <th> </th>
+                <th>Rolė</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th>1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td><button className={'btn btn-sm btn-link'}>Pridėti įrenginį</button></td>
-                <td><FaTrash/></td>
-            </tr>
-            <tr>
-                <th>2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td><button className={'btn btn-sm btn-link'}>Pridėti įrenginį</button></td>
-                <td><FaTrash/></td>
-            </tr>
+            {
+                this.state.users.map((user) => {
+                    return <tr key={0}>
+                        <td key={1}>{user.id}</td>
+                        <td key={2}>{user.name}</td>
+                        <td key={3}>{user.surname}</td>
+                        <td key={4}>{user.role === 'ROLE_ADMIN' ?
+                            <span className="badge badge-danger">Administratorius</span> :
+                            <span className="badge badge-primary">Vartotojas</span>}</td>
+                    </tr>
+                })
+            }
             </tbody>
         </table>
         </div>
