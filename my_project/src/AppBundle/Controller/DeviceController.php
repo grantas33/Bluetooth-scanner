@@ -85,7 +85,7 @@ class DeviceController extends Controller
     }
 
     /**
-     * @Route("/api/logs/firstGraphData", name="first-graph-data-points", methods="POST")
+     * @Route("/api/logs/first-graph-data", name="first-graph-data-points", methods="POST")
      * @param Request $request
      * @return JsonResponse
      */
@@ -116,11 +116,14 @@ class DeviceController extends Controller
             $timePointString = $timePoint->format("H:i:s");
             $count = 0;
             $before10sec = clone $timePoint;
-            $before10sec->modify('-10 seconds');
+            $before10sec->modify('-25 seconds');
+            $existingDevicesInTimePoint = [];
             /** @var DeviceLog $log */
             foreach ($latestLogs as $log) {
-                if ($log->getDate() > $before10sec && $log->getDate() < $timePoint) {
+                if ($log->getDate() > $before10sec && $log->getDate() < $timePoint &&
+                !in_array($log->getDevice(), $existingDevicesInTimePoint)) {
                     $count++;
+                    $existingDevicesInTimePoint[] = $log->getDevice();
                 }
             }
             $graphDataPoints[] = [

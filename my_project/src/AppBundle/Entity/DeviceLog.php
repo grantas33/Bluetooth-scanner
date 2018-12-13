@@ -66,7 +66,7 @@ class DeviceLog implements \JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return Device
      */
     public function getDevice()
     {

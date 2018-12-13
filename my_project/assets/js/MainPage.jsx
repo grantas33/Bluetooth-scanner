@@ -44,8 +44,8 @@ class MainPage extends Component {
             });
 
         this.getUsers();
-        this.getLatestLogsOnLoad();
-        this.getFirstGraphDataPoints();
+        this.getLatestLogsOnLoad(this.state.usersToFilter);
+        this.getFirstGraphDataPoints(this.state.usersToFilter);
         this.interval = setInterval(() => {
             this.getLatestLogs();
         }, 10000);
@@ -68,9 +68,9 @@ class MainPage extends Component {
         }));
     }
 
-    getFirstGraphDataPoints() {
+    getFirstGraphDataPoints(options) {
         axios
-            .post("/api/logs/firstGraphData", this.state.usersToFilter, tokenObject())
+            .post("/api/logs/first-graph-data", options, tokenObject())
             .then(res => {
                 this.setState({
                     graphData: res.data[0]
@@ -89,9 +89,9 @@ class MainPage extends Component {
             })
     }
 
-    getLatestLogsOnLoad() {
+    getLatestLogsOnLoad(options) {
         axios
-            .post("api/logs/latest", this.state.usersToFilter, tokenObject())
+            .post("api/logs/latest", options, tokenObject())
             .then(res => {
                 this.setState({
                     latestLogs: res.data[0]
@@ -114,9 +114,9 @@ class MainPage extends Component {
     handleFilterChange(options) {
         this.setState({
             usersToFilter: options
-        })
-        this.getLatestLogsOnLoad();
-        this.getFirstGraphDataPoints();
+        });
+        this.getLatestLogsOnLoad(options);
+        this.getFirstGraphDataPoints(options);
     }
 
     render() {
